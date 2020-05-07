@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "russian-stocks-crawler"
+version = "0.1.0"
+description = ""
+authors = ["Vadim Ryazanov <vadimvoronezh@yandex.ru>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+scrapy = "^2.1.0"
+
+[tool.poetry.dev-dependencies]
+wemake-python-styleguide = "^0.14.0"
+pytest = "^5.4.1"
+mypy = "^0.770"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
