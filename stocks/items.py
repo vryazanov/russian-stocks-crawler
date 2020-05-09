@@ -1,8 +1,18 @@
 """Object pepresentations of scraped items."""
+import abc
+
 import scrapy
 
 
-class StockItem(scrapy.Item):
+class BaseItem(scrapy.Item, metaclass=abc.ABCMeta):
+    """Basic prototol for all item classes."""
+
+    @abc.abstractproperty
+    def collection(self) -> str:
+        """Return a collection it belongs to."""
+
+
+class StockItem(BaseItem):
     """Basic information about a stock."""
 
     collection = 'tickers'
@@ -11,7 +21,7 @@ class StockItem(scrapy.Item):
     ticker = scrapy.Field()
 
 
-class PaymentItem(scrapy.Item):
+class PaymentItem(BaseItem):
     """Basic information about dividend payments."""
 
     collection = 'payments'

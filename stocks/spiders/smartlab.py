@@ -8,6 +8,18 @@ import scrapy.spiders
 from stocks import items
 
 
+def is_forecast(value: str) -> bool:
+    """Check it is a forecast or not.
+
+    All forecasts on smartlab.ru contains special cyrillic symbol.
+    >>> is_forecast('0,65 П')
+    True
+    >>> is_forecast('0,65')
+    False
+    """
+    return 'П' in value.split()
+
+
 def extract_amount(value: str) -> typing.Optional[float]:
     """Extract amount from raw string.
 
@@ -34,11 +46,11 @@ def extract_date(value: str) -> typing.Optional[str]:
     value = value.replace('П', '').replace(',', '.').strip()
 
     try:
-        value = datetime.datetime.strptime(value, '%d.%m.%Y')
+        dt_value = datetime.datetime.strptime(value, '%d.%m.%Y')
     except ValueError:
         return None
 
-    return value.date().isoformat()
+    return dt_value.date().isoformat()
 
 
 class SmartlabSpider(scrapy.spiders.CrawlSpider):
@@ -82,5 +94,5 @@ class SmartlabSpider(scrapy.spiders.CrawlSpider):
                 ticker=ticker,
                 declaration_date=extract_date(date),
                 amount=extract_amount(amount),
-                is_forecast=False,
+                is_forecast=is_forecast(amount) or is_forecast(date),
             )

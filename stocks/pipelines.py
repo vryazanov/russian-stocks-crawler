@@ -1,9 +1,15 @@
 """A set of pipelines."""
 import collections
+import typing
 import urllib.parse
 
 import requests
 import scrapy.exceptions
+
+import stocks.items
+
+
+ItemsType = typing.Dict[str, typing.List[stocks.items.BaseItem]]
 
 
 class VerifyPipeline:
@@ -23,7 +29,7 @@ class APIPipeline:
     def __init__(self, base_url: str):
         """Primary constructor."""
         self._base_url = base_url
-        self._items = collections.defaultdict(list)
+        self._items: ItemsType = collections.defaultdict(list)
 
     @classmethod
     def from_settings(cls, settings):
