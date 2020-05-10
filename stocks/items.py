@@ -21,6 +21,17 @@ class StockItem(BaseItem):
     ticker = scrapy.Field()
 
 
+class StockQuoteItem(BaseItem):
+    """Stock quote."""
+
+    collection = 'quotes'
+
+    ticker = scrapy.Field()
+    date = scrapy.Field()
+    open_price = scrapy.Field()
+    close_price = scrapy.Field()
+
+
 class PaymentItem(BaseItem):
     """Basic information about dividend payments."""
 
