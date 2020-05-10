@@ -1,6 +1,6 @@
 """Scrapy settings are stored in this file."""
 
-BASE_API_URL = 'https://russian-stocks-api.herokuapp.com/tickers/'
+BASE_API_URL = 'http://localhost:5000/tickers/'
 
 BOT_NAME = 'stocks'
 
@@ -12,5 +12,5 @@ ROBOTSTXT_OBEY = True
 
 ITEM_PIPELINES = {
     'stocks.pipelines.VerifyPipeline': 300,
-    # 'stocks.pipelines.APIPipeline': 300,
+    'stocks.pipelines.APIPipeline': 300,
 }

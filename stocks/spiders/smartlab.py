@@ -1,56 +1,8 @@
 """Scrapy spider that can parse smart-lab.ru website."""
-import datetime
-import typing
-
 import scrapy.linkextractors
 import scrapy.spiders
 
-from stocks import items
-
-
-def is_forecast(value: str) -> bool:
-    """Check it is a forecast or not.
-
-    All forecasts on smartlab.ru contains special cyrillic symbol.
-    >>> is_forecast('0,65 П')
-    True
-    >>> is_forecast('0,65')
-    False
-    """
-    return 'П' in value.split()
-
-
-def extract_amount(value: str) -> typing.Optional[float]:
-    """Extract amount from raw string.
-
-    >>> extract_amount('0,65 П')
-    0.65
-    >>> extract_amount('213')
-    213.0
-    >>> extract_amount('some text')
-    """
-    value = value.replace('П', '').replace(',', '.').strip()
-
-    try:
-        return float(value)
-    except Exception:
-        return None
-
-
-def extract_date(value: str) -> typing.Optional[str]:
-    """Extract date from value, return None if there is no date.
-
-    >>> extract_date('18.07.2020 П')
-    '2020-07-18'
-    """
-    value = value.replace('П', '').replace(',', '.').strip()
-
-    try:
-        dt_value = datetime.datetime.strptime(value, '%d.%m.%Y')
-    except ValueError:
-        return None
-
-    return dt_value.date().isoformat()
+from stocks import items, processors
 
 
 class SmartlabSpider(scrapy.spiders.CrawlSpider):
@@ -79,7 +31,7 @@ class SmartlabSpider(scrapy.spiders.CrawlSpider):
         tickers = response.xpath('//td[4]/text()').getall()
 
         for name, ticker in zip(names, tickers):
-            yield items.StockItem(name=name, ticker=ticker)
+            yield items.StockItem(name=name, ticker=ticker.upper())
 
     def parse_payment(self, response):
         """Extract ticker, payment date and payment size from page."""
@@ -91,8 +43,10 @@ class SmartlabSpider(scrapy.spiders.CrawlSpider):
             response.xpath(f'{xpath}/td[6]/strong/text()').getall(),
         ):
             yield items.PaymentItem(
-                ticker=ticker,
-                declaration_date=extract_date(date),
-                amount=extract_amount(amount),
-                is_forecast=is_forecast(amount) or is_forecast(date),
+                ticker=ticker.upper(),
+                declaration_date=processors.extract_date(date),
+                amount=processors.extract_amount(amount),
+                is_forecast=(
+                    processors.is_forecast(amount) or
+                    processors.is_forecast(date)),
             )

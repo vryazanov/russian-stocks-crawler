@@ -40,9 +40,8 @@ class APIPipeline:
         """Send crawled items to API."""
         for collection, items in self._items.items():
             url = urllib.parse.urljoin(self._base_url, collection)
-            r = requests.post(
-                url, json={'items': [dict(item) for item in items]})
-            print(r.content)
+            requests.post(url, json={'items': [
+                {**item, 'source': spider.name} for item in items]})
 
     def process_item(self, item, spider):
         """Add crawled item to buffer."""
