@@ -17,10 +17,6 @@ def build_qs_dict(
     df, mf, yf = list(map(int, date_from.split('.')))
     dt, mt, yt = list(map(int, date_to.split('.')))
 
-    # months starts from 0
-    mf -= 1
-    mt -= 1
-
     return {
         'market': market_id,
         'em': finam_id,
@@ -31,11 +27,11 @@ def build_qs_dict(
         'dtf': '1',
         'apply': '0',
         'df': df,
-        'mf': mf,
-        'yf': yf,
         'dt': dt,
-        'mt': mt,
+        'yf': yf,
         'yt': yt,
+        'mt': mt - 1,  # months starts from 0
+        'mf': mf - 1,
         'p': '8',
         'f': 'report',
         'e': '.txt',
