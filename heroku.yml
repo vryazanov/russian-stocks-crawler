@@ -6,3 +6,7 @@ run:
     command:
       - scrapy crawl smartlab
     image: worker
+  dohod:
+    command:
+      - scrapy crawl dohod
+    image: worker
