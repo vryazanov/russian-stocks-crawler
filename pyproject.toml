@@ -8,6 +8,7 @@ authors = ["Vadim Ryazanov <vadimvoronezh@yandex.ru>"]
 python = "^3.8"
 scrapy = "^2.1.0"
 requests = "^2.23.0"
+bravado = "^10.6.2"
 
 [tool.poetry.dev-dependencies]
 wemake-python-styleguide = "^0.14.0"
