@@ -1,3 +1,9 @@
 build:
   docker:
     worker: Dockerfile
+
+run:
+  dohod:
+    command:
+      - scrapy crawl dohod
+    image: worker
