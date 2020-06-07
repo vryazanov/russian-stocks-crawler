@@ -1,9 +1,9 @@
 build:
   docker:
-    worker: Dockerfile
+    web: Dockerfile
 
 run:
   dohod:
     command:
       - scrapy crawl dohod
-    image: worker
+    image: web
