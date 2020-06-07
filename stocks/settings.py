@@ -1,6 +1,10 @@
 """Scrapy settings are stored in this file."""
+import os
 
-BASE_API_URL = 'https://russian-stocks-api.herokuapp.com/tickers/'
+
+OPENAPI_URL = os.environ['OPENAPI_URL']
+
+OPENAPI_TOKEN = os.environ['OPENAPI_TOKEN']
 
 BOT_NAME = 'stocks'
 

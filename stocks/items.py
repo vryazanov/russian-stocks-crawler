@@ -1,21 +1,30 @@
 """Object pepresentations of scraped items."""
 import abc
+import enum
 
 import scrapy
+
+
+class CollectionType(enum.Enum):
+    """Possible collection types."""
+
+    tickers = 'tickers'
+    payments = 'payments'
+    quotes = 'quotes'
 
 
 class BaseItem(scrapy.Item, metaclass=abc.ABCMeta):
     """Basic prototol for all item classes."""
 
     @abc.abstractproperty
-    def collection(self) -> str:
+    def collection(self) -> CollectionType:
         """Return a collection it belongs to."""
 
 
 class StockItem(BaseItem):
     """Basic information about a stock."""
 
-    collection = 'tickers'
+    collection = CollectionType.tickers
 
     name = scrapy.Field()
     ticker = scrapy.Field()
@@ -24,7 +33,7 @@ class StockItem(BaseItem):
 class StockQuoteItem(BaseItem):
     """Stock quote."""
 
-    collection = 'quotes'
+    collection = CollectionType.quotes
 
     ticker = scrapy.Field()
     date = scrapy.Field()
@@ -35,7 +44,7 @@ class StockQuoteItem(BaseItem):
 class PaymentItem(BaseItem):
     """Basic information about dividend payments."""
 
-    collection = 'payments'
+    collection = CollectionType.payments
 
     ticker = scrapy.Field()
     declaration_date = scrapy.Field()
