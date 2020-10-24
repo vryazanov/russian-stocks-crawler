@@ -57,8 +57,9 @@ class StockQuotesSpider(scrapy.spiders.CrawlSpider):
     allowed_domains = ('finam.ru',)
     start_urls = ('https://www.finam.ru/quotes/stocks/russia/',)
 
-    date_from = '01.04.2020'
-    date_to = '01.04.2020'
+    date_from = '23.10.2020'
+    date_to = '24.10.2020'
+
     base_export_url = 'http://export.finam.ru/export9.out'
 
     rules = (
