@@ -3,8 +3,7 @@ import collections
 import typing
 import urllib.parse
 
-import bravado.client
-import bravado.requests_client
+import requests
 import scrapy.exceptions
 
 import stocks.items
@@ -30,16 +29,8 @@ class APIPipeline:
 
     def __init__(self, openapi_url: str, openapi_token: str):
         """Primary constructor."""
-        http_client = bravado.requests_client.RequestsClient()
-        http_client.set_api_key(
-            host=urllib.parse.urlparse(openapi_url).netloc,
-            api_key=openapi_token,
-            param_name='X-Authorization',
-            param_in='header',
-        )
-
-        self._api = bravado.client.SwaggerClient.from_url(  # type: ignore
-            openapi_url, http_client=http_client)
+        self._openapi_url = openapi_url
+        self._openapi_token = openapi_token
         self._items: ItemsType = collections.defaultdict(list)
 
     @classmethod
@@ -53,15 +44,16 @@ class APIPipeline:
             payload = [{**item, 'source': spider.name} for item in items]
 
             if collection == stocks.items.CollectionType.tickers:
-                future = self._api.crawler.import_tickers(payload=payload)
-            elif collection == stocks.items.CollectionType.quotes:
-                future = self._api.crawler.import_quotes(payload=payload)
+                path = '/crawler/tickers'
             elif collection == stocks.items.CollectionType.payments:
-                future = self._api.crawler.import_payments(payload=payload)
+                path = '/crawler/payments'
             else:
                 raise Exception('API is not specidified for collection.')
 
-            future.response()
+            url = urllib.parse.urljoin(self._openapi_url, path)
+            headers = {'Authorization': f'Bearer {self._openapi_token}'}
+
+            requests.post(url, json=payload, headers=headers)
 
     def process_item(self, item, spider):
         """Add crawled item to buffer."""

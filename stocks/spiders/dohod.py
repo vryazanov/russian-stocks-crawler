@@ -31,7 +31,7 @@ class DohodSpider(scrapy.spiders.CrawlSpider):
         ):
             yield items.PaymentItem(
                 ticker=ticker.upper(),
-                declaration_date=processors.extract_date(date),
+                date=processors.extract_date(date),
                 amount=processors.extract_amount(amount),
                 is_forecast=(
                     processors.is_forecast(amount) or

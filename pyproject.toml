@@ -8,7 +8,6 @@ authors = ["Vadim Ryazanov <vadimvoronezh@yandex.ru>"]
 python = "^3.8"
 scrapy = "^2.1.0"
 requests = "^2.23.0"
-bravado = "^10.6.2"
 python-dotenv = "^0.13.0"
 
 [tool.poetry.dev-dependencies]

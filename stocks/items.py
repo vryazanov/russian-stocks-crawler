@@ -47,6 +47,6 @@ class PaymentItem(BaseItem):
     collection = CollectionType.payments
 
     ticker = scrapy.Field()
-    declaration_date = scrapy.Field()
+    date = scrapy.Field()
     amount = scrapy.Field()
     is_forecast = scrapy.Field()

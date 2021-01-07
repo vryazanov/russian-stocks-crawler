@@ -16,5 +16,5 @@ ROBOTSTXT_OBEY = False
 
 ITEM_PIPELINES = {
     'stocks.pipelines.VerifyPipeline': 300,
-    'stocks.pipelines.APIPipeline': 300,
+    'stocks.pipelines.APIPipeline': 310,
 }
