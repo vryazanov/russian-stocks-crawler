@@ -57,9 +57,6 @@ class StockQuotesSpider(scrapy.spiders.CrawlSpider):
     allowed_domains = ('finam.ru',)
     start_urls = ('https://www.finam.ru/quotes/stocks/russia/',)
 
-    date_from = '23.10.2020'
-    date_to = '24.10.2020'
-
     base_export_url = 'http://export.finam.ru/export9.out'
 
     rules = (
@@ -81,6 +78,12 @@ class StockQuotesSpider(scrapy.spiders.CrawlSpider):
         ),
     )
 
+    def __init__(self, date_from: str, date_to: str):
+        """Primary constructor."""
+        super().__init__()
+        self.date_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
+        self.date_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
+
     def parse_export(self, response):
         """Extract meta data about ticker in order to run export."""
         ticker = response.xpath('//input[@name="code"]/@value').get()
@@ -91,8 +94,8 @@ class StockQuotesSpider(scrapy.spiders.CrawlSpider):
             build_qs_dict(
                 finam_id,
                 market_id,
-                self.date_from,
-                self.date_to,
+                self.date_from.strftime('%d.%m.%Y'),
+                self.date_to.strftime('%d.%m.%Y'),
             ),
         )
 

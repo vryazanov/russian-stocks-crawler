@@ -39,13 +39,13 @@ def extract_amount(value: str) -> typing.Optional[float]:
         return None
 
 
-def extract_date(value: str) -> typing.Optional[datetime.date]:
+def extract_date(value: str) -> typing.Optional[str]:
     """Extract date from value, return None if there is no date.
 
     >>> extract_date('18.07.2020 П')
-    datetime.date(2020, 7, 18)
+    '2020-07-18'
     >>> extract_date('20.12.2020 (прогноз)')
-    datetime.date(2020, 12, 20)
+    '2020-12-20'
     """
     value = value.lower().strip()
     value = value.replace('п', '').replace('прогноз', '').replace(',', '.')
@@ -56,6 +56,6 @@ def extract_date(value: str) -> typing.Optional[datetime.date]:
         except ValueError:
             continue
         else:
-            return dt_value.date()
+            return dt_value.date().isoformat()
 
     return None

@@ -5,7 +5,7 @@ import enum
 import scrapy
 
 
-class CollectionType(enum.Enum):
+class CollectionType(str, enum.Enum):
     """Possible collection types."""
 
     tickers = 'tickers'

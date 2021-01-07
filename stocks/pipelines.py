@@ -27,10 +27,10 @@ class VerifyPipeline:
 class APIPipeline:
     """Pipline that persists crawled items with API."""
 
-    def __init__(self, openapi_url: str, openapi_token: str):
+    def __init__(self, url: str, token: str):
         """Primary constructor."""
-        self._openapi_url = openapi_url
-        self._openapi_token = openapi_token
+        self._url = url
+        self._token = token
         self._items: ItemsType = collections.defaultdict(list)
 
     @classmethod
@@ -43,15 +43,8 @@ class APIPipeline:
         for collection, items in self._items.items():
             payload = [{**item, 'source': spider.name} for item in items]
 
-            if collection == stocks.items.CollectionType.tickers:
-                path = '/crawler/tickers'
-            elif collection == stocks.items.CollectionType.payments:
-                path = '/crawler/payments'
-            else:
-                raise Exception('API is not specidified for collection.')
-
-            url = urllib.parse.urljoin(self._openapi_url, path)
-            headers = {'Authorization': f'Bearer {self._openapi_token}'}
+            url = urllib.parse.urljoin(self._url, f'/crawler/{collection}')
+            headers = {'Authorization': f'Bearer {self._token}'}
 
             requests.post(url, json=payload, headers=headers)
 
