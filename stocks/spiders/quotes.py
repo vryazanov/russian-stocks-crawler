@@ -69,12 +69,7 @@ class StockQuotesSpider(scrapy.spiders.CrawlSpider):
             scrapy.linkextractors.LinkExtractor(
                 allow=('/profile/moex-akcii/[0-9a-zA-Z-]+/$',),
             ),
-        ),
-        scrapy.spiders.Rule(
-            scrapy.linkextractors.LinkExtractor(
-                allow=('/profile/moex-akcii/[0-9a-zA-Z-]+/export',),
-            ),
-            callback='parse_export',
+            callback='parse_details',
         ),
     )
 
@@ -83,6 +78,10 @@ class StockQuotesSpider(scrapy.spiders.CrawlSpider):
         super().__init__()
         self.date_from = datetime.datetime.strptime(date_from, '%Y-%m-%d')
         self.date_to = datetime.datetime.strptime(date_to, '%Y-%m-%d')
+
+    def parse_details(self, response):
+        """Redirect to export page."""
+        yield response.follow('export', callback=self.parse_export)
 
     def parse_export(self, response):
         """Extract meta data about ticker in order to run export."""

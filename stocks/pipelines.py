@@ -38,17 +38,13 @@ class APIPipeline:
         """Secondary constructor."""
         return cls(settings['OPENAPI_URL'], settings['OPENAPI_TOKEN'])
 
-    def close_spider(self, spider):
-        """Send crawled items to API."""
-        for collection, items in self._items.items():
-            payload = [{**item, 'source': spider.name} for item in items]
-
-            url = urllib.parse.urljoin(self._url, f'/crawler/{collection}')
-            headers = {'Authorization': f'Bearer {self._token}'}
-
-            requests.post(url, json=payload, headers=headers)
-
     def process_item(self, item, spider):
-        """Add crawled item to buffer."""
-        self._items[item.collection].append(item)
+        """Persist item to remote storage."""
+        payload = {**item, 'source': spider.name}
+
+        url = urllib.parse.urljoin(self._url, f'/crawler/{item.collection}/')
+        headers = {'Authorization': f'Bearer {self._token}'}
+
+        requests.post(url, json=payload, headers=headers)
+
         return item
