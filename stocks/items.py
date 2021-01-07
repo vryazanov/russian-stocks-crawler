@@ -27,7 +27,7 @@ class StockItem(BaseItem):
     collection = CollectionType.tickers
 
     name = scrapy.Field()
-    ticker = scrapy.Field()
+    code = scrapy.Field()
 
 
 class StockQuoteItem(BaseItem):

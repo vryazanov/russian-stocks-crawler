@@ -31,7 +31,7 @@ class SmartlabSpider(scrapy.spiders.CrawlSpider):
         tickers = response.xpath('//td[4]/text()').getall()
 
         for name, ticker in zip(names, tickers):
-            yield items.StockItem(name=name, ticker=ticker.upper())
+            yield items.StockItem(name=name, code=ticker.upper())
 
     def parse_payment(self, response):
         """Extract ticker, payment date and payment size from page."""
