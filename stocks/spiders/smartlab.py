@@ -35,7 +35,7 @@ class SmartlabSpider(scrapy.spiders.CrawlSpider):
 
     def parse_payment(self, response):
         """Extract ticker, payment date and payment size from page."""
-        xpath = "//table[contains(@class, 'dividends')]/*"
+        xpath = "(//table[contains(@class, 'dividends')])/tr[@class='header_row']/following-sibling::tr"  # noqa
 
         for ticker, date, amount in zip(
             response.xpath(f'{xpath}/td[1]/text()').getall(),
