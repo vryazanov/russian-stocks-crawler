@@ -28,6 +28,7 @@ class StockItem(BaseItem):
 
     name = scrapy.Field()
     code = scrapy.Field()
+    lot = scrapy.Field()
 
 
 class StockQuoteItem(BaseItem):

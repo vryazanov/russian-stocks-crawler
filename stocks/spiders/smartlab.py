@@ -1,4 +1,6 @@
 """Scrapy spider that can parse smart-lab.ru website."""
+import json
+
 import scrapy.linkextractors
 import scrapy.spiders
 
@@ -9,7 +11,7 @@ class SmartlabSpider(scrapy.spiders.CrawlSpider):
     """Main spider."""
 
     name = 'smartlab'
-    allowed_domains = ('smart-lab.ru',)
+    allowed_domains = ('smart-lab.ru', 'iss.moex.com',)
     start_urls = ('https://smart-lab.ru/q/shares/',)
     rules = (
         scrapy.spiders.Rule(
@@ -25,13 +27,36 @@ class SmartlabSpider(scrapy.spiders.CrawlSpider):
         ),
     )
 
+    moex_details = 'https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/{ticker}.jsonp'  # noqa
+
     def parse_start_url(self, response):
         """Extract stocks from the list page."""
         names = response.xpath('//td[3]/a/text()').getall()
         tickers = response.xpath('//td[4]/text()').getall()
 
         for name, ticker in zip(names, tickers):
-            yield items.StockItem(name=name, code=ticker.upper())
+            ticker = ticker.upper()
+            item = items.StockItem(name=name, code=ticker)
+
+            yield scrapy.Request(
+                self.moex_details.format(ticker=ticker),
+                meta={'item': item}, callback=self.parse_moex)
+
+    def parse_moex(self, response):
+        """Parse lot size from moex api."""
+        item = response.meta['item']
+
+        try:
+            structured = json.loads(response.text)
+        except Exception as e:
+            return item
+
+        try:
+            item['lot'] = structured['securities']['data'][0][4]
+        except Exception as e:
+            pass
+
+        return item
 
     def parse_payment(self, response):
         """Extract ticker, payment date and payment size from page."""
